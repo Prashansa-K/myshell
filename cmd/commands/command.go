@@ -17,4 +17,9 @@ type CommandOutput struct {
 var ValidCommands = []Command{
 	{"exit", nil, Exit},
 	{"echo", nil, Echo},
+	{"type", nil, Type},
 }
+
+// maintaining one more list to avoid init cycle
+// if we use above struct, ValidCommand.type refers to Type func, which in turn refers to ValidCommands, thus creating a cycle
+var validCommands = []string{"exit", "echo", "type"}
