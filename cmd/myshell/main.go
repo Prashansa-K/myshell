@@ -24,7 +24,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			executeCommand(cmd, input)
+			executeCommand(cmd)
 		}
 	}
 }
@@ -40,6 +40,7 @@ func validateCommand(input string) (Command, error) {
 
 	for _, c := range validCommands {
 		if command == c.invocation {
+			c.args = tokens[1:]
 			return c, nil
 		}
 	}
@@ -47,7 +48,7 @@ func validateCommand(input string) (Command, error) {
 	return Command{}, fmt.Errorf("%s: command not found", command)
 }
 
-func executeCommand(cmd Command, input string) {
+func executeCommand(cmd Command) {
 	// statusCode, output, error :=
-	cmd.handlerFunc(input)
+	cmd.handlerFunc(cmd.args)
 }
