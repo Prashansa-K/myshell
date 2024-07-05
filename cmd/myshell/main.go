@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	commands "github.com/codecrafters-io/shell-starter-go/cmd/commands"
 )
 
 func main() {
@@ -29,26 +31,32 @@ func main() {
 	}
 }
 
-func validateCommand(input string) (Command, error) {
+func validateCommand(input string) (commands.Command, error) {
 	tokens := strings.Split(input, SPACE)
 
 	if len(tokens) == 0 {
-		return Command{}, nil // no command found
+		return commands.Command{}, nil // no command found
 	}
 
 	command := strings.TrimSpace(tokens[0])
 
-	for _, c := range validCommands {
-		if command == c.invocation {
-			c.args = tokens[1:]
+	for _, c := range commands.ValidCommands {
+		if command == c.Invocation {
+			c.Args = tokens[1:]
 			return c, nil
 		}
 	}
 
-	return Command{}, fmt.Errorf("%s: command not found", command)
+	return commands.Command{}, fmt.Errorf("%s: command not found", command)
 }
 
-func executeCommand(cmd Command) {
-	// statusCode, output, error :=
-	cmd.handlerFunc(cmd.args)
+func executeCommand(cmd commands.Command) {
+	cmdOutput := cmd.HandlerFunc(cmd.Args)
+
+	if cmdOutput.StatusCode != 0 {
+		fmt.Println(cmdOutput.Error.Error())
+		return
+	}
+
+	fmt.Print(cmdOutput.Output)
 }
