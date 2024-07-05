@@ -8,18 +8,22 @@ import (
 )
 
 func main() {
-	fmt.Fprint(os.Stdout, "$ ")
 
-	// Wait for user input
-	input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-	if err != nil {
-		return
-	}
+	shellReader := bufio.NewReader(os.Stdin)
 
-	_, err = validateCommand(input)
-	if err != nil {
-		fmt.Println(err)
-		return
+	for {
+		fmt.Fprint(os.Stdout, "$ ")
+
+		// Wait for user input
+		input, err := shellReader.ReadString('\n')
+		if err != nil {
+			return
+		}
+
+		_, err = validateCommand(input)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
